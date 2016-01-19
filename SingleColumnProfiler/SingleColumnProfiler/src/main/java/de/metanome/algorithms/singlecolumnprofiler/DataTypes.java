@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
@@ -68,7 +69,13 @@ public class DataTypes {
   // binary object
   // Currency
   final static public String UNKOWN = "NA";
-
+ //postgre specific 
+ //longer than 255
+  final static public String myTEXT="TEXT";
+ //varchar with length=36 not null 
+  final static public String myUUID="UUID";
+ //int 
+  final static public String mySERIAL="SERIAL";
   // semantic data types
   final static public String Jsontype = "JSON";
   final static public String XMLtype = "XML";
@@ -189,6 +196,14 @@ public class DataTypes {
     }
   }
 
+  public static boolean isUUID(String input) {
+    try {
+      UUID.fromString(input);
+      return true;
+    } catch (Exception ex) {
+      return false;
+    }
+  }
   public static boolean isDecimal(String input) {
     try {
       DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -271,8 +286,8 @@ public class DataTypes {
       return DataTypes.UNKOWN;
     else if (isBoolean(value))
       return DataTypes.myBOOLEAN;
-    else if (isChar(value))
-      return DataTypes.myCHAR;
+//    else if (isChar(value))
+//      return DataTypes.myCHAR;
     else if (!Util.isContainingNumbers(value))
       return DataTypes.mySTRING;
     else if (isShort(value))

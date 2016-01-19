@@ -2,11 +2,16 @@ package de.metanome.algorithms.singlecolumnprofiler;
 
 
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
+
+import de.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.metanome.algorithm_integration.ColumnIdentifier;
 import de.metanome.algorithm_integration.input.InputGenerationException;
@@ -50,23 +55,44 @@ public class SingleColumnProfilerAlgorithm {
   public final String MAX = "Max";
   public final String AVG = "Avg.";
   public final String STDD = "Standard Deviation";
-
-
+  // Delimiter used in CSV file
+  BufferedWriter bufferWritter;
+  private static final String COMMA_DELIMITER = ",";
+  private static final String NEW_LINE_SEPARATOR = "\n";
   public void execute() throws AlgorithmExecutionException {
 
     ////////////////////////////////////////////
     // THE DISCOVERY ALGORITHM LIVES HERE :-) //
     ////////////////////////////////////////////
-
+ //just to generate my data
+//    try{
+//      File file =new File("generateschema.txt");
+//      
+//      //if file doesnt exists, then create it
+//      if(!file.exists()){
+//          file.createNewFile();
+//      }
+//      
+//      //true = append file
+//      FileWriter fileWritter = new FileWriter(file.getName(),true);
+//      bufferWritter = new BufferedWriter(fileWritter);   
+//    }
+//    catch (IOException e) {
+//      //exception handling left as an exercise for the reader
+//  }
+//=======================================================
+    //step 1: initialisation
     InitialiseColumnProfiles();
-    // get data types
+   
+    //step 2: get data types
     getColumnsProfiles();
 
-    // output
-    JSONObject General = new JSONObject();
-    General.put(NUMCOLUMN, columnNames.size());
-    General.put(NUMTUPLE, NumofTuples);
-    addStatistic("General", General, "*", relationName);
+    //step 3: output
+   // JSONObject General = new JSONObject();
+   // General.put(NUMCOLUMN, columnNames.size());
+   // General.put(NUMTUPLE, NumofTuples);
+    String general=NUMCOLUMN+columnNames.size()+"\n"+NUMTUPLE+NumofTuples;
+    addStatistic("General", general, "*", relationName);
     for (int i = 0; i < columnsProfile.size(); i++) {
       // System.out.println(columnsProfile.get(i).toString());
       generateColumnStatistic(columnsProfile.get(i));
@@ -75,13 +101,13 @@ public class SingleColumnProfilerAlgorithm {
 
   }
 
-  private void InitialiseColumnProfiles() throws InputGenerationException, InputIterationException {
+  private void InitialiseColumnProfiles() throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
     input = this.inputGenerator.generateNewCopy();
     this.relationName = input.relationName();
     this.columnNames = input.columnNames();
-    outputPath = "io" + File.separator + "measurements" + File.separator
-        + relationName.replaceAll(".csv", "") + "_" + this.getClass().getSimpleName()
-        + File.separator;;
+//    outputPath = "io" + File.separator + "measurements" + File.separator
+//        + relationName.replaceAll(".csv", "") + "_" + this.getClass().getSimpleName()
+//        + File.separator;;
     columnsProfile = new ArrayList<ColumnMainProfile>();
     // generate an initial profiles according to the first record
     if (input.hasNext()) {
@@ -91,6 +117,7 @@ public class SingleColumnProfilerAlgorithm {
       for (int i = 0; i < columnNames.size(); i++) {
         ColumnMainProfile profile = new ColumnMainProfile(columnNames.get(i));
         String currentColumnvalue = firstrecord.get(i);
+       
         // data type even if null the type is NA
         profile.setDataType(DataTypes.getDataType(currentColumnvalue));
 
@@ -124,13 +151,13 @@ public class SingleColumnProfilerAlgorithm {
       }
 
     }
-    System.out.println("initial values done" + relationName);
+    System.out.println("initial values done " + relationName);
 
   }
 
 
 
-  private void getColumnsProfiles() throws InputGenerationException, InputIterationException {
+  private void getColumnsProfiles() throws InputGenerationException, InputIterationException, AlgorithmConfigurationException {
     List<String> currentrecord = null;
     // for each tuple
     while (input.hasNext()) {
@@ -149,15 +176,29 @@ public class SingleColumnProfilerAlgorithm {
     // add the calculated values
     for (int i = 0; i < columnsProfile.size(); i++) {
       columnsProfile.get(i).setCalculatedFields(NumofTuples);
-      try {
-
-        columnsProfile.get(i).writeMapToCsv(outputPath, relationName.replaceAll(".csv", ""),
-            columnsProfile.get(i).getColumnName());
+//      try {
+//       
+//        columnsProfile.get(i).writeMapToCsv(outputPath, relationName.replaceAll(".csv", ""),
+//        columnsProfile.get(i).getColumnName());
         columnsProfile.get(i).setFreq(null);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+        ///////////////////////////////////////////////////////////////////
+//        bufferWritter.write(relationName.replaceAll(".csv", ""));
+//        bufferWritter.write(COMMA_DELIMITER);
+//        bufferWritter.write(columnsProfile.get(i).getColumnName());
+//        bufferWritter.write(COMMA_DELIMITER);
+//        bufferWritter.write(columnsProfile.get(i).getDataType());
+//        bufferWritter.write(COMMA_DELIMITER);
+//      if(columnsProfile.get(i).getNumNull()==0)
+//        bufferWritter.write("NOTNULL");
+//      else
+//        bufferWritter.write("NULL");
+//        bufferWritter.write(NEW_LINE_SEPARATOR);
+//        bufferWritter.flush();
+        //////////////////////////////////////////////////////////////////
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+        }
     /////////////////////////////////////
     // add the second pass value
     input = this.inputGenerator.generateNewCopy();
@@ -184,49 +225,63 @@ public class SingleColumnProfilerAlgorithm {
     resultReceiver.receiveResult(bs);
   }
 
-
-  /*
-   * private void generateColumnStatistic(ColumnMainProfile cs) throws AlgorithmExecutionException {
-   * 
-   * //for all with string addStatistic(NUMBEROFNULL, cs.getNumofNull(), cs.getColumnName(),
-   * relationName); addStatistic(PERCENTOFNULL, cs.getPercentNull(), cs.getColumnName(),
-   * relationName); addStatistic(NUMBEROFDISTINCT, cs.getNumDistinct(), cs.getColumnName(),
-   * relationName); addStatistic(PERCENTODFISTINCT, cs.getPercentDistinct(), cs.getColumnName(),
-   * relationName); //if(cs.getDistinctValues()!=null &&
-   * cs.getNumDistinct()<20)addStatistic(DISTINCTVALUES, cs.getDistinctValues(), cs.getColumnName(),
-   * relationName); // if(cs.getFreq()!=null) addStatistic(VALUEDISTRIBUTION, cs.getFreq(),
-   * cs.getColumnName(), relationName); if(cs.getTopkValues()!=null) addStatistic(TOPKITEM,
-   * cs.getTopkValues(), cs.getColumnName(), relationName);
-   * 
-   * // just for strings if (cs.getDataType() == DataTypes.mySTRING) { String stringwithlength =
-   * cs.getDataType() + "[" + Util.roundUp(cs.getLongestString().length(), 16) + "]";
-   * addStatistic(DATATYPE, stringwithlength, cs.getColumnName(), relationName);
-   * if(cs.getLongestString()!=null) addStatistic(LONGESTSTRING, cs.getLongestString(),
-   * cs.getColumnName(), relationName); if(
-   * cs.getShortestString()!=null)addStatistic(SHORTESTSTRING, cs.getShortestString(),
-   * cs.getColumnName(), relationName); if(cs.getFirstString()!=null) addStatistic(MINSTRING,
-   * cs.getFirstString(), cs.getColumnName(), relationName);
-   * if(cs.getLasttString()!=null)addStatistic(MAXSTRING, cs.getLasttString(), cs.getColumnName(),
-   * relationName); if(cs.getSemantictype()!=null) addStatistic(SEMANTICDATATYPE,
-   * cs.getSemantictype(), cs.getColumnName(), relationName); if(cs.getLengthdist()!=null)
-   * addStatistic(STRINGLENGTHDISTRIBUTION, cs.getLengthdist(), cs.getColumnName(), relationName);
-   * 
-   * } else { //all types not string addStatistic(DATATYPE, cs.getDataType(), cs.getColumnName(),
-   * relationName);
-   * 
-   * //just numbers if (DataTypes.isNumeric(cs.getDataType())) { if(cs.getMin()!=null)
-   * addStatistic(MIN, cs.getMin(), cs.getColumnName(), relationName);
-   * if(cs.getMax()!=null)addStatistic(MAX, cs.getMax(), cs.getColumnName(), relationName);
-   * addStatistic(AVG, cs.getAvg(), cs.getColumnName(), relationName); addStatistic(STDD,
-   * cs.getStdDev(), cs.getColumnName(), relationName); addStatistic(MED, cs.getMedian(),
-   * cs.getColumnName(), relationName); }
-   * 
-   * }
-   * 
-   * }
-   */
-
   private void generateColumnStatistic(ColumnMainProfile cs) throws AlgorithmExecutionException {
+
+    String column ="";
+
+    // for all with string
+    column+=COLUMNNAME+" : "+ cs.getColumnName()+"\n";
+    column+=NUMBEROFNULL+" : "+  cs.getNumofNull()+"\n";
+    column+=PERCENTOFNULL+" : "+ cs.getPercentNull()+"\n";
+    column+=NUMBEROFDISTINCT+" : "+cs.getNumDistinct()+"\n";
+    column+=PERCENTODFISTINCT+" : "+ cs.getPercentDistinct()+"\n";
+
+    // if (cs.getDistinctValues() != null) column.put(DISTINCTVALUES, cs.getDistinctValues());
+    // if(cs.getFreq()!=null) column.put(VALUEDISTRIBUTION, Util.mapToJson(cs.getFreq()));
+   
+    if (cs.getTopkValues() != null)
+      column+=TOPKITEM+" : "+ Util.mapTostring(cs.getTopkValues())+"\n";
+
+    // just for strings
+    if (cs.getDataType() == DataTypes.mySTRING) {
+      String stringwithlength =
+          cs.getDataType() + "[" + Util.roundUp(cs.getLongestString().length(), 16) + "]";
+      column+=DATATYPE+" : "+ stringwithlength+"\n";
+      if (cs.getLongestString() != null)
+        column+=LONGESTSTRING+" : "+cs.getLongestString()+"\n";
+      if (cs.getShortestString() != null)
+        column+=SHORTESTSTRING+" : "+cs.getShortestString()+"\n";
+      if (cs.getFirstString() != null)
+        column+=MINSTRING+" : "+cs.getFirstString()+"\n";
+      if (cs.getLasttString() != null)
+        column+=MAXSTRING+" : "+cs.getLasttString()+"\n";
+      if (cs.getSemantictype() != null && cs.getSemantictype() !=DataTypes.UNKOWN)
+        column+=SEMANTICDATATYPE+" : "+ cs.getSemantictype()+"\n";
+      // if(cs.getLengthdist()!=null) column.put(STRINGLENGTHDISTRIBUTION,Util.mapToJsonIntegerKey(
+      // cs.getLengthdist()));
+
+    } else {
+      // all types not string
+      column+=DATATYPE+" : "+cs.getDataType()+"\n";
+
+      // just numbers
+      if (DataTypes.isNumeric(cs.getDataType())) {
+        if (cs.getMin() != null)
+          column+=MIN+" : "+ cs.getMin()+"\n";
+        if (cs.getMax() != null)
+          column+=MAX+" : "+ cs.getMax()+"\n";
+        column+=AVG+" : "+cs.getAvg()+"\n";
+        Double stdev = cs.getStdDev();
+        if (!stdev.equals(Double.NaN))
+          column+=STDD+" : "+ cs.getStdDev()+"\n";
+      }
+
+    }
+
+    addStatistic("Single Column Profiler", column, cs.getColumnName(), relationName);
+  }
+  
+  private void generateColumnStatisticJson(ColumnMainProfile cs) throws AlgorithmExecutionException {
 
     JSONObject column = new JSONObject();
 
@@ -279,7 +334,7 @@ public class SingleColumnProfilerAlgorithm {
 
     }
 
-    addStatistic("Single Column Profiler", column, cs.getColumnName(), relationName);
+    addStatistic("Single Column Profiler", column.toString(), cs.getColumnName(), relationName);
   }
 
 }

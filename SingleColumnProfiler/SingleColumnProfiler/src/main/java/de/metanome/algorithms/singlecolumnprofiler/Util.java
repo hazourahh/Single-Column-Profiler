@@ -139,6 +139,23 @@ public class Util {
     return object;
   }
 
+  public static String mapTostring(Map<?, ?> data) {
+    String object = "";
+
+    for (Map.Entry<?, ?> entry : data.entrySet()) {
+      String key = (String) entry.getKey();
+      if (key == null) {
+        throw new NullPointerException("key == null");
+      }
+      try {
+        object+=key+"("+entry.getValue()+") ";
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return object;
+  }
   public static JSONObject mapToJsonIntegerKey(Map<?, ?> data) {
     JSONObject object = new JSONObject();
 

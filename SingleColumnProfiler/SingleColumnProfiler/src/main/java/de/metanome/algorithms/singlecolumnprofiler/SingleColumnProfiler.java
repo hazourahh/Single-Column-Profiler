@@ -20,9 +20,8 @@ public class SingleColumnProfiler extends SingleColumnProfilerAlgorithm
   };
 
   @Override
-  @SuppressWarnings("rawtypes")
-  public ArrayList<ConfigurationRequirement> getConfigurationRequirements() {
-    ArrayList<ConfigurationRequirement> conf = new ArrayList<>();
+  public ArrayList<ConfigurationRequirement<?>> getConfigurationRequirements() {
+    ArrayList<ConfigurationRequirement<?>> conf = new ArrayList<>();
     conf.add(new ConfigurationRequirementRelationalInput(
         SingleColumnProfiler.Identifier.INPUT_GENERATOR.name()));
     // conf.add(new

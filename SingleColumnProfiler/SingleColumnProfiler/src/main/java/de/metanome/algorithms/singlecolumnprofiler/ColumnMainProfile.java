@@ -4,6 +4,7 @@ package de.metanome.algorithms.singlecolumnprofiler;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -256,6 +257,17 @@ public class ColumnMainProfile {
       if (DataType == DataTypes.mySTRING) {
         firstString = freq.firstKey().toString();
         lasttString = freq.lastKey().toString();
+        if(LongestString.length()>255)
+          DataType=DataTypes.myTEXT;
+        else if( DataType==DataTypes.mySTRING && 
+            LongestString.length()==ShortestString.length() &&
+            NumNull==0 &&
+            DataTypes.isUUID(LongestString)&&
+            DataTypes.isUUID(ShortestString)&&
+            DataTypes.isUUID(firstString)&&
+            DataTypes.isUUID(lasttString)
+            )
+        {DataType=DataTypes.myUUID;}
       }
       // for numbers
       if (DataTypes.isNumeric(DataType))
@@ -263,6 +275,22 @@ public class ColumnMainProfile {
 
       // all
       freq = (TreeMap<String, MutableInt>) Util.sortByValues(freq);
+      if (DataType==DataTypes.myINTEGER && NumDistinct==numoftuples && Min>0 && Max<=2147483647)
+      {
+        Iterator it = freq.entrySet().iterator();
+        MutableInt prev=new MutableInt(),current=new MutableInt();
+        if(it.hasNext())
+          {Map.Entry pair = (Map.Entry)it.next();
+          prev=(MutableInt)pair.getValue();
+          }
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            current=(MutableInt)pair.getValue();
+            if(prev.getMutableInt()-current.getMutableInt()!=1)
+              break;
+                    }
+        
+      }
       topk =
           (TreeMap<String, MutableInt>) Util.getTopK(freq, SingleColumnProfilerAlgorithm.Numoftopk);
 
@@ -332,8 +360,9 @@ public class ColumnMainProfile {
   }
 
   public void updateColumnProfilesecondpass(String newvalue) { // string values
-    if (DataType == DataTypes.mySTRING) { // length distribution
-                                          // addValueforlengdist(newvalue.length());
+    if (DataType == DataTypes.mySTRING || DataType == DataTypes.myTEXT) { 
+      // length distribution
+      // addValueforlengdist(newvalue.length());
 
       // Verifies same semantic type
       if (getSemantictype() == null)
@@ -394,7 +423,7 @@ public class ColumnMainProfile {
       FileWriter fileWriter = new FileWriter(path + "value_" + relation + "_" + columnname);
 
       for (Map.Entry<String, MutableInt> entry : freq.entrySet()) {
-        fileWriter.append(entry.getKey());
+        fileWriter.append(entry.getKey().replace(',', ' '));
         fileWriter.append(COMMA_DELIMITER);
         fileWriter.append(String.valueOf(entry.getValue()));
         fileWriter.append(NEW_LINE_SEPARATOR);
