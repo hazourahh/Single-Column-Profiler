@@ -260,11 +260,13 @@ public class MetanomeTestRunner {
   
 	public static void run() {
 		Config conf = new Config();
-	//	for(int i=0; i<inputTableNames2.length;i++)
-	//	{conf.inputDatasetName=inputTableNames2[i];
+		long time = System.currentTimeMillis();
+//		for(int i=0; i<inputTableNames.length;i++)
+//		{conf.inputDatasetName=inputTableNames[i];
 		MetanomeMock.execute(conf);
-	//	}
-		
+//		}
+	    time = System.currentTimeMillis() - time;
+	    System.out.println("The whole process ..."+time);
 	}
 
 	public static void run(String[] args) {

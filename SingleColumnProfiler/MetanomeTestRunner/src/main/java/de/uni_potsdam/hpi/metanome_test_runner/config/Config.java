@@ -271,15 +271,18 @@ public class Config {
     public String inputDatasetName;
     public String inputFolderPath = "data" + File.separator;
     public String inputFileEnding = ".csv";
-    public char inputFileSeparator = '\t';
-    public char inputFileQuotechar = '\0';
-    public char inputFileEscape = '\0';
+//    public char inputFileSeparator = '\t';
+//    public char inputFileQuotechar = '\0';
+//    public char inputFileEscape = '\0';
+    public char inputFileSeparator = ';';
+    public char inputFileQuotechar = '\'';
+    public char inputFileEscape = '\\';
     public int inputFileSkipLines = 0;
     public boolean inputFileStrictQuotes = false;
     public boolean inputFileIgnoreLeadingWhiteSpace = false;
     public boolean inputFileHasHeader = false;
     public boolean inputFileSkipDifferingLines = false;
-    public String inputFileNullString = "\\N";
+    public String inputFileNullString = " ";
    
     public String measurementsFolderPath = "io" + File.separator + "measurements" + File.separator;
     
@@ -312,7 +315,7 @@ public class Config {
    
             break;
             case ARTIST:
-            this.inputDatasetName = "track";
+            this.inputDatasetName = "WDC_planets";
             break;
             
             case EDIT:
