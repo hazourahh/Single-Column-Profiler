@@ -1,0 +1,14 @@
+# Columns1
+# Tuples9
+column Name : column1
+# Null : 0
+% Null : 0
+# Distinct : 9
+% Distinct : 100
+Top 10 frquent Items : Earth,Terrestrial,1.000,1.00,1.00,1.00,1.00,1,no,N2 O2 Ar(1) Jupiter,Giant,11.209,317.8,5.20,11.86,0.41,67,yes,H2 He(1) Mars,Terrestrial,0.532,0.11,1.52,1.88,1.03,2,no,CO2 N2 Ar(1) Mercury,Terrestrial,0.382,0.06,0.47,0.24,58.64,0,no,minimal(1) Name,Type,Equatorial_diameter,Mass,Orbital_radius,Orbital_period,Rotation_period,Confirmed_moons,Rings,Atmosphere(1) Neptune,Giant,3.883,17.2,30.06,164.8,0.67,14,yes,H2 He(1) Saturn,Giant,9.449,95.2,9.54,29.46,0.43,62,yes,H2 He(1) Uranus,Giant,4.007,14.6,19.22,84.01,-0.72,27,yes,H2 He(1) Venus,Terrestrial,0.949,0.82,0.72,0.62,-243.02,0,no,CO2 N2(1) 
+Data Type : VARCHAR[128]
+Longest String : Name,Type,Equatorial_diameter,Mass,Orbital_radius,Orbital_period,Rotation_period,Confirmed_moons,Rings,Atmosphere
+Shortest String : Saturn,Giant,9.449,95.2,9.54,29.46,0.43,62,yes,H2 He
+Min String : Earth,Terrestrial,1.000,1.00,1.00,1.00,1.00,1,no,N2 O2 Ar
+Max String : Venus,Terrestrial,0.949,0.82,0.72,0.62,-243.02,0,no,CO2 N2
+
