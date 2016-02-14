@@ -3,7 +3,7 @@
 
   <groupId>de.uni_potsdam.hpi</groupId>
   <artifactId>MetanomeTestRunner</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>MetanomeTestRunner</name>
@@ -43,27 +43,27 @@
     <dependency>
       <groupId>de.metanome.algorithms.singlecolumnprofiler</groupId>
       <artifactId>SingleColumnProfiler</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>1.1-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>de.metanome</groupId>
       <artifactId>algorithm_integration</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>1.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     
     <dependency>
       <groupId>de.metanome</groupId>
       <artifactId>algorithm_helper</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>1.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     
     <dependency>
       <groupId>de.metanome</groupId>
       <artifactId>backend</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>1.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
      <dependency>

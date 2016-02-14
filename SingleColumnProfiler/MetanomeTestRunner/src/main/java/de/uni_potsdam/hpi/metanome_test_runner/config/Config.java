@@ -274,13 +274,13 @@ public class Config {
 //    public char inputFileSeparator = '\t';
 //    public char inputFileQuotechar = '\0';
 //    public char inputFileEscape = '\0';
-    public char inputFileSeparator = ';';
+    public char inputFileSeparator = ',';
     public char inputFileQuotechar = '\'';
     public char inputFileEscape = '\\';
     public int inputFileSkipLines = 0;
     public boolean inputFileStrictQuotes = false;
     public boolean inputFileIgnoreLeadingWhiteSpace = false;
-    public boolean inputFileHasHeader = false;
+    public boolean inputFileHasHeader = true;
     public boolean inputFileSkipDifferingLines = false;
     public String inputFileNullString = " ";
    

@@ -1,17 +1,14 @@
 package de.uni_potsdam.hpi.metanome_test_runner.mocks;
 
-import java.io.BufferedReader;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-import org.json.JSONTokener;
+
 
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.metanome.algorithm_integration.configuration.ConfigurationSettingFileInput;
@@ -19,7 +16,6 @@ import de.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.metanome.algorithm_integration.results.BasicStatistic;
 import de.metanome.algorithm_integration.results.Result;
 import de.metanome.algorithms.singlecolumnprofiler.SingleColumnProfiler;
-import de.metanome.algorithms.singlecolumnprofiler.SingleColumnProfilerAlgorithm;
 import de.metanome.backend.input.file.DefaultFileInputGenerator;
 import de.metanome.backend.result_receiver.ResultCache;
 import de.uni_potsdam.hpi.metanome_test_runner.config.Config;
@@ -104,7 +100,7 @@ public class MetanomeMock {
 					conf.inputFileSeparator, conf.inputFileQuotechar, conf.inputFileEscape, conf.inputFileStrictQuotes, 
 					conf.inputFileIgnoreLeadingWhiteSpace, conf.inputFileSkipLines, conf.inputFileHasHeader, conf.inputFileSkipDifferingLines, conf.inputFileNullString));
 			
-			ResultCache resultReceiver = new ResultCache("MetanomeMock");
+			ResultCache resultReceiver = new ResultCache("MetanomeMock",null);
 			
 			SingleColumnProfiler algorithm = new SingleColumnProfiler();
 			algorithm.setRelationalInputConfigurationValue(SingleColumnProfiler.Identifier.INPUT_GENERATOR.name(), inputGenerator);
@@ -134,6 +130,7 @@ public class MetanomeMock {
 				
 				for (Result result : results) {
 				BasicStatistic od = (BasicStatistic) result;
+				//System.out.println(od);
 	            FileUtils.writeToFile(format(results), outputPath + conf.resultFileName);
 				}
 				
@@ -154,7 +151,7 @@ public class MetanomeMock {
 		StringBuilder builder = new StringBuilder();
 		for (Result result : results) {
 			BasicStatistic od = (BasicStatistic) result;
-			builder.append(od.getStatisticValue().toString()+ "\r\n");
+			builder.append(od.getStatisticMap().toString()+ "\r\n");
 		}
 		return builder.toString();
 	}
