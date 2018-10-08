@@ -1,2 +1,9 @@
 /target/
 
+/.settings/
+/io/
+/result/
+/target/
+*.classpath
+*.project
+*.txt
