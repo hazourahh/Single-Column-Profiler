@@ -1,0 +1,9 @@
+de.metanome.algorithms.singlecolumnprofiler.SingleColumnProfiler@133314b
+
+Runtime: 203
+
+Results: 2
+
+Config:
+	algorithm: SingleColumnProfiler
+	dataset: WDC_planets.csv
